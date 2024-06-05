@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import logo from "/public/logo.webp";
 
 export default function Home() {
 
@@ -13,29 +14,37 @@ export default function Home() {
     });
 
     fetch('https://plex.tv/api/v2/pins', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json'
-      },
-      body: bodyData
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+        },
+        body: bodyData
     })
-      .then(response => response.text())
-      .then(data => console.log(data.id, data['code']))
-      .catch(error => console.error('Error:', error));
+    .then(response => response.json())
+    .then(data => {
+        const pin = {
+            id: data.id,
+            code: data.code
+        };
+        storePinAndRedirect(pin, clientID);
+    })
   }
 
   const storePinAndRedirect = (pin, clientID) => {
       localStorage.setItem('plex_pin_id', pin.id);
       localStorage.setItem('plex_pin_code', pin.code);
-      const redirectUrl = `https://app.plex.tv/auth/#?clientID=${clientID}&code=${pin.code}&forwardUrl=https://plex-roulette.dams-tv.fr/callback.html`;
+      const redirectUrl = `https://app.plex.tv/auth/#?clientID=${clientID}&code=${pin.code}&forwardUrl=http://localhost:3000/callback`;
       window.location.href = redirectUrl;
   }
 
 
   return (
     <main className="flex items-center justify-center min-h-screen flex-col p-24">
-
+      {/* Logo en haut à gauche */}
+      <div className="absolute top-0 left-10 p-4">
+        <Image src={logo} alt="Logo" width={150} height={150} />
+      </div>
       <div>
         <div className="flex flex-col gap-4">
           <p className="font-bold text-2xl">
