@@ -7,7 +7,16 @@ import logo from "/public/logo.webp";
 const data = [
     { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
     { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
-    // Ajoutez les autres options ici
+    { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
+    { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
+    { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
+    { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
+    { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
+    { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
+    { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
+    { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
+    { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
+    { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
 ];
 
 const CallbackComponent = () => {
@@ -201,37 +210,52 @@ const CallbackComponent = () => {
     };
 
     return (
-        <div>
-            <div id="servers">
-                {servers.length > 0 ? (
-                    <div>
-                        <label>Select your server:</label>
-                        <select value={selectedServer} onChange={handleServerChange}>
-                            <option value="">Select a server</option>
-                            {servers.map(server => (
-                                <option key={server.name} value={server.name}>
-                                    {server.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                ) : (
-                    <div>Loading servers...</div>
-                )}
-            </div>
-            {libraries.length > 0 && (
-                <div id="libraries">
-                    <label>Select the library:</label>
-                    <select value={selectedLibraryKey} onChange={handleLibraryChange}>
-                        <option value="">Select a library</option>
-                        {libraries.map(library => (
-                            <option key={library.key} value={library.key}>
-                                {library.title}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+<main className="flex flex-col min-h-screen p-24">
+    {/* Logo en haut à gauche */}
+    <div className="absolute top-0 left-10 p-4">
+        <Image src={logo} alt="Logo" width={150} height={150} />
+    </div>
+
+    {/* Title en haut au centre */}
+    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 text-transparent bg-clip-text p-4">
+        Plex Roulette
+    </div>
+
+    {/* Dropdown menus en haut */}
+    <div className="flex justify-center w-full mt-20 space-x-4 z-10">
+        <div id="servers" className="flex flex-col items-center">
+            <label className="mb-2">Firt, chose your server</label>
+            {servers.length > 0 ? (
+                <select value={selectedServer} onChange={handleServerChange} className="p-2 border rounded">
+                    <option value="">Select a server</option>
+                    {servers.map(server => (
+                        <option key={server.name} value={server.name}>
+                            {server.name}
+                        </option>
+                    ))}
+                </select>
+            ) : (
+                <div>Loading servers...</div>
             )}
+        </div>
+        {libraries.length > 0 && (
+            <div id="libraries" className="flex flex-col items-center">
+                <label className="mb-2">Now, chose your library</label>
+                <select value={selectedLibraryKey} onChange={handleLibraryChange} className="p-2 border rounded">
+                    <option value="">Select a library</option>
+                    {libraries.map(library => (
+                        <option key={library.key} value={library.key}>
+                            {library.title}
+                        </option>
+                    ))}
+                </select>
+            </div>
+        )}
+    </div>
+
+    <div className="flex flex-1 mt-24">
+        {/* Roulette à gauche */}
+        <div className="flex flex-col items-center justify-center w-1/4">
             {showSpinButton && (
                 <div id="spin">
                     <button onClick={handleSpinClick}>
@@ -243,23 +267,35 @@ const CallbackComponent = () => {
                             onStopSpinning={handleStopSpinning}
                         />
                     </button>
-                    <button className="border border-grey-500 p-3 rounded hover:bg-slate-800 cursor-pointer" onClick={handleSpinClick}>Spin</button>
+                    <button className="border border-grey-500 p-3 rounded hover:bg-slate-800 cursor-pointer mt-4" onClick={handleSpinClick}>Spin</button>
                 </div>
             )}
-            <div id="roulette">
-                {selectedMovie && (
-                    <div className="absolute top-50 right-20 p-4">
-                        <h2>{selectedMovie.title}</h2>
-                        <img src={selectedMovie.imageObjectURL} alt={selectedMovie.title} width={300} />
-                    </div>
-                )}
-            </div>
-            <div id="logout">
-                <button onClick={handleLogout} className="border border-red-500 p-3 rounded hover:bg-red-800 cursor-pointer">
-                    Logout
-                </button>
-            </div>
         </div>
+        
+        {/* Selected movie à droite */}
+        <div className="flex-1 relative">
+            {selectedMovie && (
+                <div className="absolute top-1/2 right-20 transform -translate-y-1/2">
+                    <h2 className="text-2xl">{selectedMovie.title}</h2>
+                    <img src={selectedMovie.imageObjectURL} alt={selectedMovie.title} width={300} />
+                    <p className="text-2xl">{selectedMovie.title}</p>
+                </div>
+            )}
+        </div>
+    </div>
+
+    {/* Logout en haut à droite */}
+    <div className="absolute top-4 right-10 p-4">
+        <button onClick={handleLogout} className="border border-red-500 p-3 rounded hover:bg-red-800 cursor-pointer">
+            Logout
+        </button>
+    </div>
+
+    <div className="relative place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
+    </div>
+</main>
+
+    
     );
 };
 
