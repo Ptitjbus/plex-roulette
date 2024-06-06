@@ -11,8 +11,7 @@ const data = [
 ];
 
 const CallbackComponent = () => {
-    // États pour gérer les informations d'authentification, serveurs, bibliothèques, film sélectionné, etc.
-    const [authToken, setAuthToken] = useState(localStorage.getItem('plex_auth_token'));
+    const [authToken, setAuthToken] = useState(null);
     const [servers, setServers] = useState([]);
     const [libraries, setLibraries] = useState([]);
     const [selectedServer, setSelectedServer] = useState('');
@@ -24,10 +23,15 @@ const CallbackComponent = () => {
     const [prizeNumber, setPrizeNumber] = useState(0);
 
     useEffect(() => {
-        if (authToken) {
-            fetchServers(authToken);
-        } else {
-            fetchAuthToken();
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem('plex_auth_token');
+            setAuthToken(token);
+
+            if (token) {
+                fetchServers(token);
+            } else {
+                fetchAuthToken();
+            }
         }
     }, []);
 
@@ -51,7 +55,9 @@ const CallbackComponent = () => {
             const data = await response.json();
             const token = data.authToken;
             console.log('Token:', token);
-            localStorage.setItem('plex_auth_token', token);
+            if (typeof window !== "undefined") {
+                localStorage.setItem('plex_auth_token', token);
+            }
             setAuthToken(token);
             fetchServers(token);
         } catch (error) {
@@ -79,7 +85,9 @@ const CallbackComponent = () => {
                 const address = publicAddress.replace(/\./g, '-');
                 return { name, address, port, accessToken };
             });
-            localStorage.setItem('plex_server_list', JSON.stringify(serverList));
+            if (typeof window !== "undefined") {
+                localStorage.setItem('plex_server_list', JSON.stringify(serverList));
+            }
             setServers(serverList);
         } catch (error) {
             console.error('Error fetching servers:', error);
@@ -88,9 +96,11 @@ const CallbackComponent = () => {
 
     const fetchLibraries = async (server) => {
         const { address, port, accessToken } = server;
-        localStorage.setItem('plex_server_address', address);
-        localStorage.setItem('plex_server_port', port);
-        localStorage.setItem('plex_access_Token', accessToken);
+        if (typeof window !== "undefined") {
+            localStorage.setItem('plex_server_address', address);
+            localStorage.setItem('plex_server_port', port);
+            localStorage.setItem('plex_access_Token', accessToken);
+        }
 
         try {
             const response = await fetch(`https://${address}-${port}.plex-roulette.com/library/sections`, {
@@ -184,8 +194,10 @@ const CallbackComponent = () => {
     };
 
     const handleLogout = () => {
-        localStorage.clear();
-        window.location.href = 'http://localhost:3000';
+        if (typeof window !== "undefined") {
+            localStorage.clear();
+            window.location.href = '/';
+        }
     };
 
     return (
