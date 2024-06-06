@@ -4,23 +4,12 @@ import { Wheel } from 'react-custom-roulette';
 import Image from "next/image";
 import logo from "/public/logo.webp";
 
-// Configuration des données pour la roulette
 const data = [
     { option: '0', style: { backgroundColor: 'green', textColor: 'green'} },
     { option: '1', style: { backgroundColor: 'white', textColor: 'white'} },
-    { option: '2', style: { backgroundColor: 'green', textColor: 'green'} },
-    { option: '3', style: { backgroundColor: 'white', textColor: 'white'} },
-    { option: '4', style: { backgroundColor: 'green', textColor: 'green'} },
-    { option: '5', style: { backgroundColor: 'white', textColor: 'white'} },
-    { option: '6', style: { backgroundColor: 'green', textColor: 'green'} },
-    { option: '7', style: { backgroundColor: 'white', textColor: 'white'} },
-    { option: '8', style: { backgroundColor: 'green', textColor: 'green'} },
-    { option: '9', style: { backgroundColor: 'white', textColor: 'white'} },
-    { option: '10', style: { backgroundColor: 'green', textColor: 'green'} },
-    { option: '11', style: { backgroundColor: 'white', textColor: 'white'} },
+    // Ajoutez les autres options ici
 ];
 
-// Définition du composant principal
 const CallbackComponent = () => {
     // États pour gérer les informations d'authentification, serveurs, bibliothèques, film sélectionné, etc.
     const [authToken, setAuthToken] = useState(localStorage.getItem('plex_auth_token'));
@@ -34,7 +23,6 @@ const CallbackComponent = () => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
 
-    // Utilisation de useEffect pour récupérer les serveurs à l'initialisation du composant
     useEffect(() => {
         if (authToken) {
             fetchServers(authToken);
@@ -43,7 +31,6 @@ const CallbackComponent = () => {
         }
     }, []);
 
-    // Fonction pour récupérer le jeton d'authentification
     const fetchAuthToken = async () => {
         const id = localStorage.getItem('plex_pin_id');
         const code = localStorage.getItem('plex_pin_code');
@@ -72,7 +59,6 @@ const CallbackComponent = () => {
         }
     };
 
-    // Fonction pour récupérer les serveurs
     const fetchServers = async (token) => {
         try {
             const response = await fetch(`https://clients.plex.tv/api/v2/resources?X-Plex-Client-Identifier=null&X-Plex-Token=${token}`, {
@@ -100,7 +86,6 @@ const CallbackComponent = () => {
         }
     };
 
-    // Fonction pour récupérer les bibliothèques d'un serveur
     const fetchLibraries = async (server) => {
         const { address, port, accessToken } = server;
         localStorage.setItem('plex_server_address', address);
@@ -125,7 +110,6 @@ const CallbackComponent = () => {
         }
     };
 
-    // Fonction pour récupérer les films non regardés d'une bibliothèque
     const fetchMovies = async (libraryKey) => {
         const serverAddress = localStorage.getItem('plex_server_address');
         const serverPort = localStorage.getItem('plex_server_port');
@@ -150,7 +134,6 @@ const CallbackComponent = () => {
         }
     };
 
-    // Fonction pour afficher un film aléatoire
     const displayRandomMovie = async (movies) => {
         const randomIndex = Math.floor(Math.random() * movies.length);
         const randomMovie = movies[randomIndex];
@@ -175,21 +158,18 @@ const CallbackComponent = () => {
         }
     };
 
-    // Gestionnaire de changement de serveur
     const handleServerChange = (event) => {
         const selectedServer = servers.find(server => server.name === event.target.value);
         setSelectedServer(selectedServer.name);
         fetchLibraries(selectedServer);
     };
 
-    // Gestionnaire de changement de bibliothèque
     const handleLibraryChange = (event) => {
         const libraryKey = event.target.value;
         setSelectedLibraryKey(libraryKey);
         fetchMovies(libraryKey);
     };
 
-    // Gestionnaire de clic sur le bouton de spin
     const handleSpinClick = () => {
         if (!mustSpin) {
             const newPrizeNumber = Math.floor(Math.random() * data.length);
@@ -198,13 +178,16 @@ const CallbackComponent = () => {
         }
     };
 
-    // Gestionnaire de fin de spin
     const handleStopSpinning = () => {
         setMustSpin(false);
         displayRandomMovie(selectedMovies);
     };
 
-    // Rendu du composant
+    const handleLogout = () => {
+        localStorage.clear();
+        window.location.href = 'http://localhost:3000';
+    };
+
     return (
         <div>
             <div id="servers">
@@ -258,6 +241,11 @@ const CallbackComponent = () => {
                         <img src={selectedMovie.imageObjectURL} alt={selectedMovie.title} width={300} />
                     </div>
                 )}
+            </div>
+            <div id="logout">
+                <button onClick={handleLogout} className="border border-red-500 p-3 rounded hover:bg-red-800 cursor-pointer">
+                    Logout
+                </button>
             </div>
         </div>
     );

@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+select {
+  background-color: white; /* Changez ceci selon vos préférences */
+  color: black; /* Assurez-vous que le texte est visible */
+  border: 1px solid #ccc; /* Bordure pour une meilleure visibilité */
+  padding: 10px; /* Espacement intérieur pour un meilleur confort visuel */
+  font-size: 16px; /* Taille de police pour une meilleure lisibilité */
+}
+
+option {
+  background-color: white; /* Changez ceci selon vos préférences */
+  color: black; /* Assurez-vous que le texte est visible */
+  padding: 10px; /* Espacement intérieur pour un meilleur confort visuel */
+}
 
 :root {
     --foreground-rgb: 255, 255, 255;
