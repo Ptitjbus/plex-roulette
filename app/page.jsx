@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import logo from "/public/logo.webp";
+import logo from "/public/logov2.webp";
 
 export default function Home() {
 
