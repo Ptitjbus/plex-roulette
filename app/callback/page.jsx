@@ -35,7 +35,7 @@ const CallbackComponent = () => {
     const [showFullSummary, setShowFullSummary] = useState(false);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
+        
             const token = localStorage.getItem('plex_auth_token');
             setAuthToken(token);
 
@@ -44,11 +44,11 @@ const CallbackComponent = () => {
             } else {
                 fetchAuthToken();
             }
-        }
+        
     }, []);
 
     const fetchAuthToken = async () => {
-        if (typeof window !== "undefined") {
+       
             const id = localStorage.getItem('plex_pin_id');
             const code = localStorage.getItem('plex_pin_code');
             const clientIdentifier = '38c35482-5611-4b25-9b17-ab5e1d3fad01';
@@ -68,15 +68,15 @@ const CallbackComponent = () => {
                 const data = await response.json();
                 const token = data.authToken;
                 console.log('Token:', token);
-                if (typeof window !== "undefined") {
+                
                     localStorage.setItem('plex_auth_token', token);
-                }
+                
                 setAuthToken(token);
                 fetchServers(token);
             } catch (error) {
                 console.error('Error fetching auth token:', error);
             }
-        }
+        
     };
 
     const fetchServers = async (token) => {
@@ -99,9 +99,9 @@ const CallbackComponent = () => {
                 const address = publicAddress.replace(/\./g, '-');
                 return { name, address, port, accessToken };
             });
-            if (typeof window !== "undefined") {
+            
                 localStorage.setItem('plex_server_list', JSON.stringify(serverList));
-            }
+            
             setServers(serverList);
         } catch (error) {
             console.error('Error fetching servers:', error);
@@ -110,11 +110,11 @@ const CallbackComponent = () => {
 
     const fetchLibraries = async (server) => {
         const { address, port, accessToken } = server;
-        if (typeof window !== "undefined") {
+        
             localStorage.setItem('plex_server_address', address);
             localStorage.setItem('plex_server_port', port);
             localStorage.setItem('plex_access_Token', accessToken);
-        }
+        
 
         try {
             const response = await fetch(`https://${address}-${port}.plex-roulette.com/library/sections`, {
@@ -135,7 +135,7 @@ const CallbackComponent = () => {
     };
 
     const fetchMovies = async (libraryKey) => {
-        if (typeof window !== "undefined") {
+        
             const serverAddress = localStorage.getItem('plex_server_address');
             const serverPort = localStorage.getItem('plex_server_port');
             const accessToken = localStorage.getItem('plex_access_Token');
@@ -157,14 +157,14 @@ const CallbackComponent = () => {
             } catch (error) {
                 console.error('Error fetching movies:', error);
             }
-        }
+        
     };
 
     const displayRandomMovie = async (movies) => {
         const randomIndex = Math.floor(Math.random() * movies.length);
         const randomMovie = movies[randomIndex];
         const { title, thumb, summary, year, audienceRating, rating, guid } = randomMovie;
-        if (typeof window !== "undefined") {
+        
             const serverAddress = localStorage.getItem('plex_server_address');
             const serverPort = localStorage.getItem('plex_server_port');
             const authToken = localStorage.getItem('plex_access_Token');
@@ -183,7 +183,7 @@ const CallbackComponent = () => {
             } catch (error) {
                 console.error('Error:', error);
             }
-        }
+        
     };
 
     const handleServerChange = (event) => {
@@ -212,10 +212,10 @@ const CallbackComponent = () => {
     };
 
     const handleLogout = () => {
-        if (typeof window !== "undefined") {
+        
             localStorage.clear();
             window.location.href = 'https://plex-roulette.com/';
-        }
+        
     };
 
     const toggleSummary = () => {
